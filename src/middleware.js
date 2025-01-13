@@ -4,34 +4,46 @@ import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 
 const localeMiddleware = createMiddleware(routing);
-export async function middleware(req) {
-  const token = await getToken({ req });
 
-  // Check if user is authenticated
+export async function middleware(req) {
+  let token;
+  try {
+    token = await getToken({ req });
+  } catch (error) {
+    console.error("Error retrieving token:", error);
+  }
+
   const isAuthenticated = !!token;
   const { pathname } = req.nextUrl;
   const localeMatch = pathname.match(/^\/(ar|en)/);
-  const locale = localeMatch ? localeMatch[1] : null;
+  const locale = localeMatch ? localeMatch[1] : "en";
+
+  console.log("Pathname:", pathname);
+  console.log("Is Authenticated:", isAuthenticated);
+  console.log("Token:", token);
 
   // Define protected routes
   const protectedRoutes = /^\/(en|ar)\/instructor\/.*/;
 
-  if (protectedRoutes.test(pathname) && !isAuthenticated) {
-    // Redirect to login if not authenticated
-    return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
-  }
-  if (
-    protectedRoutes.test(pathname) &&
-    !token?.user.role.includes("instructor")
-  ) {
-    return NextResponse.redirect(new URL(`/${locale}/`, req.url));
+  if (protectedRoutes.test(pathname)) {
+    if (!isAuthenticated) {
+      console.log("Redirecting to login...");
+      return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
+    }
+    if (
+      !Array.isArray(token?.user?.role) ||
+      !token.user.role.includes("instructor")
+    ) {
+      console.log("Redirecting to home...");
+      return NextResponse.redirect(new URL(`/${locale}/`, req.url));
+    }
   }
 
-  // Check if user is authenticated and trying to access login or signup
+  // Prevent authenticated users from accessing login/signup
   const isLoginOrSignup = /^\/(en|ar)\/(login|signup)/.test(pathname);
   if (isAuthenticated && isLoginOrSignup) {
-    // If user is authenticated and trying to access login/signup, redirect to home
-    return NextResponse.redirect(new URL(`/${locale || "en"}/`, req.url));
+    console.log("Redirecting authenticated user to home...");
+    return NextResponse.redirect(new URL(`/${locale}/`, req.url));
   }
 
   // Apply localization middleware
@@ -39,6 +51,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  // Match only internationalized pathnames
   matcher: ["/", "/(ar|en)/:path*"],
 };
