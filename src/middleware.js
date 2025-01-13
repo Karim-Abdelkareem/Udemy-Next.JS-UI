@@ -8,8 +8,7 @@ const localeMiddleware = createMiddleware(routing);
 export async function middleware(req) {
   let token;
   try {
-    const token = await getToken({ req });
-    console.log("Token:", token);
+    token = await getToken({ req });
   } catch (error) {
     console.error("Error retrieving token:", error);
   }
@@ -19,23 +18,17 @@ export async function middleware(req) {
   const localeMatch = pathname.match(/^\/(ar|en)/);
   const locale = localeMatch ? localeMatch[1] : "en";
 
-  console.log("Pathname:", pathname);
-  console.log("Is Authenticated:", isAuthenticated);
-  console.log("Token:", token);
-
   // Define protected routes
   const protectedRoutes = /^\/(en|ar)\/instructor\/.*/;
 
   if (protectedRoutes.test(pathname)) {
     if (!isAuthenticated) {
-      console.log("Redirecting to login...");
       return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
     }
     if (
       !Array.isArray(token?.user?.role) ||
       !token.user.role.includes("instructor")
     ) {
-      console.log("Redirecting to home...");
       return NextResponse.redirect(new URL(`/${locale}/`, req.url));
     }
   }
@@ -43,7 +36,6 @@ export async function middleware(req) {
   // Prevent authenticated users from accessing login/signup
   const isLoginOrSignup = /^\/(en|ar)\/(login|signup)/.test(pathname);
   if (isAuthenticated && isLoginOrSignup) {
-    console.log("Redirecting authenticated user to home...");
     return NextResponse.redirect(new URL(`/${locale}/`, req.url));
   }
 
