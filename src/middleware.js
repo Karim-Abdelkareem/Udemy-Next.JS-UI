@@ -8,7 +8,8 @@ const localeMiddleware = createMiddleware(routing);
 export async function middleware(req) {
   let token;
   try {
-    token = await getToken({ req });
+    const token = await getToken({ req });
+    console.log("Token:", token);
   } catch (error) {
     console.error("Error retrieving token:", error);
   }
