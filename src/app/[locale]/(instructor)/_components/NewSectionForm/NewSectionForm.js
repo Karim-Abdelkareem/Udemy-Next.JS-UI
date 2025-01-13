@@ -25,7 +25,7 @@ const NewSectionForm = ({
 
   const handleUpdateSection = () => {
     axios
-      .put(`http://127.0.0.1:3001/course-sections/${sectionId}`, section)
+      .put(`https://udemy-eosin-eight.vercel.app/course-sections/${sectionId}`, section)
       .then((response) => {
         console.log("Section updated:", response.data);
       })

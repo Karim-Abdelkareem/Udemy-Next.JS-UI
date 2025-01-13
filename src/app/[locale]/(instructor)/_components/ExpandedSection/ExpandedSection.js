@@ -19,7 +19,7 @@ const ExpandedSection = ({ courseId, formVisibility, onAddSection }) => {
   const addSection = async () => {
     try {
       await axios.post(
-        `http://127.0.0.1:3001/course-sections/${courseId}`,
+        `https://udemy-eosin-eight.vercel.app/course-sections/${courseId}`,
         section
       );
       return true;
@@ -33,8 +33,8 @@ const ExpandedSection = ({ courseId, formVisibility, onAddSection }) => {
     if (section.title.trim() === "") {
       setTitleError(true);
       return;
-    }else if(section.title_Ar.trim() ===""){
-      setTitleError_Ar(true)
+    } else if (section.title_Ar.trim() === "") {
+      setTitleError_Ar(true);
     }
 
     setTitleError(false);
@@ -97,7 +97,9 @@ const ExpandedSection = ({ courseId, formVisibility, onAddSection }) => {
               locale === "en" ? "pr-12" : "pl-12"
             } `}
             value={section.title_Ar}
-            onChange={(e) => setSection({ ...section, title_Ar: e.target.value })}
+            onChange={(e) =>
+              setSection({ ...section, title_Ar: e.target.value })
+            }
             maxLength={MAX_TITLE_LENGTH}
           />
           <span

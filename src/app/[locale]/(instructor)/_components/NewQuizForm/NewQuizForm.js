@@ -26,7 +26,7 @@ const NewQuizForm = ({
   const handleAddQuiz = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:3001/course-sections/${sectionId}/quiz`,
+        `https://udemy-eosin-eight.vercel.app/course-sections/${sectionId}/quiz`,
         newQuiz
       );
       if(response.data.message==="success") {

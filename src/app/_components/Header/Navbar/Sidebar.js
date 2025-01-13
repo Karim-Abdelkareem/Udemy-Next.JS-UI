@@ -4,7 +4,6 @@ import styles from "./TopNav.module.css";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
-import { ChevronDownIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
