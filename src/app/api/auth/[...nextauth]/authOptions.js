@@ -54,10 +54,14 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
-      session.accessToken = token.accessToken;
-      session.user = token.user;
-      return session;
+    callbacks: {
+      async session({ session, token }) {
+        if (token) {
+          session.accessToken = token.accessToken;
+          session.user = token.user;
+        }
+        return session;
+      },
     },
   },
 
