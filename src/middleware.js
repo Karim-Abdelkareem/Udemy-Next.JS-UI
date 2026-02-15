@@ -8,7 +8,8 @@ const localeMiddleware = createMiddleware(routing);
 export async function middleware(req) {
   let token;
   try {
-    token = await getToken({ req });
+    // Use same secret as authOptions so JWT is verified correctly (e.g. on Vercel)
+    token = await getToken({ req, secret: process.env.AUTH_SECRET });
   } catch (error) {
     console.error("Error retrieving token:", error);
   }
@@ -25,10 +26,13 @@ export async function middleware(req) {
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
     }
-    if (
-      !Array.isArray(token?.user?.role) ||
-      !token.user.role.includes("instructor")
-    ) {
+    // Support role as array (e.g. ["instructor"]) or single string (e.g. "instructor")
+    const roles = Array.isArray(token?.user?.role)
+      ? token.user.role
+      : token?.user?.role
+        ? [token.user.role]
+        : [];
+    if (!roles.includes("instructor")) {
       return NextResponse.redirect(new URL(`/${locale}/`, req.url));
     }
   }
