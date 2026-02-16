@@ -291,16 +291,16 @@ const SidebarInput = React.forwardRef(({ className, ...props }, ref) => {
 })
 SidebarInput.displayName = "SidebarInput"
 
-const Sidebar = React.forwardRef(({ className, ...props }, ref) => {
+const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => {
   return (
     (<div
       ref={ref}
-      data-sidebar=""
+      data-sidebar="header"
       className={cn("flex flex-col gap-2 p-2", className)}
       {...props} />)
   );
 })
-Sidebar.displayName = "Sidebar"
+SidebarHeader.displayName = "SidebarHeader"
 
 const SidebarFooter = React.forwardRef(({ className, ...props }, ref) => {
   return (
@@ -599,7 +599,7 @@ export {
   SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
-  Sidebar,
+  SidebarHeader,
   SidebarInput,
   SidebarInset,
   SidebarMenu,
